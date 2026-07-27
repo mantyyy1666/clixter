@@ -22,6 +22,7 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  img, video{max-width:100%;display:block;height:auto;}
   body{
     font-family:'Poppins',sans-serif;
     background: linear-gradient(160deg, var(--blue) 0%, var(--blue-deep) 100%);
@@ -211,8 +212,37 @@
   }
   @keyframes scroll-bob{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(12px);opacity:1}}
   @media(max-width:768px){
-    .hero{padding-left:24px;padding-right:24px}
-    .hero-title{font-size:clamp(2.2rem,8vw,3.5rem)}
+    .hero{
+      min-height:100svh;
+      padding:92px 18px 96px 18px;
+      align-items:flex-end;
+    }
+    .hero-inner{max-width:100%;padding-right:16px}
+    .brandmark-small{left:18px;top:16px;font-size:.7rem}
+    .ring-col{left:8px;width:24px;opacity:.85}
+    .ring{width:18px;height:18px}
+    .hero-title{font-size:clamp(2.3rem,8.6vw,3.3rem);line-height:.95;max-width:320px}
+    .hero-sub{font-size:1rem;margin-top:14px}
+    .hero-tagline{font-size:.9rem;max-width:330px;margin-top:22px}
+    .scroll-cue{bottom:24px;font-size:.68rem}
+  }
+  @media(max-width:640px){
+    .about,.services,.why,.case,.cta,.bts,.our-works,.bts-showcase{padding-left:18px;padding-right:18px}
+    .team-grid{grid-template-columns:repeat(2,1fr)}
+    .team-grid .team-card:nth-child(3){grid-column:span 2}
+    .svc-grid{grid-template-columns:1fr}
+    .why-box{flex-direction:column}
+    .about-card,.svc-card,.why-box,.case-card{padding:18px 16px}
+    .contact-list a{flex-direction:column;align-items:flex-start;gap:6px}
+    .bts-grid{max-width:100%;padding-left:0}
+    .bts-card{width:100%;align-self:stretch;transform:none}
+    .bts-card:nth-child(2),.bts-card:nth-child(4){align-self:stretch}
+    .works-reel{display:flex;flex-direction:column;gap:12px}
+    .work-card,.work-card--large{aspect-ratio:9/16;min-height:0;width:100%}
+    .work-card--large{grid-row:auto}
+    .works-heading{margin-bottom:30px}
+    .works-stamp{right:12px;top:185px;width:72px;height:72px;font-size:.54rem}
+    .bts-showcase__intro{display:block}
   }
 
   /* ===== ABOUT ===== */
@@ -644,7 +674,7 @@
 
   <!-- PORTFOLIO / HERO -->
   <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-label="Clixter cinematic hero background" src="assets/videos/IMG_5442 1.MOV"></video>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-label="Clixter cinematic hero background" src="assets/videos/hero-bg.mp4"></video>
     <div class="hero-overlay" aria-hidden="true"></div>
     <div class="brandmark-small">Clixter</div>
     <div class="ring-col">
@@ -885,6 +915,17 @@
     });
   },{threshold:.15});
   els.forEach(el=>io.observe(el));
+
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    heroVideo.muted = true;
+    heroVideo.setAttribute('playsinline', '');
+    heroVideo.setAttribute('webkit-playsinline', '');
+    heroVideo.play().catch(() => {
+      window.addEventListener('pointerdown', () => heroVideo.play().catch(() => {}), { once: true });
+      window.addEventListener('touchstart', () => heroVideo.play().catch(() => {}), { once: true });
+    });
+  }
 
   // ===== WORK CARD VIDEO AUTOPLAY =====
   const workVideos = document.querySelectorAll('.work-card video');
