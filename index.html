@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clixter — We Make Cinema</title>
+<link rel="preload" as="video" href="assets/videos/hero-bg.mp4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -86,12 +87,23 @@
     object-fit:cover;
     z-index:0;
     pointer-events:none;
+    opacity:1;
+    visibility:visible;
+    display:block;
   }
+  
+  .hero-video::-webkit-media-controls{display:none!important}
+  .hero-video::-webkit-media-controls-panel{display:none!important}
+  .hero-video::-webkit-media-controls-play-button{display:none!important}
+  .hero-video::-moz-media-controls{display:none!important}
   .hero-overlay{
-    background:rgba(0,0,0,.24);
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0 2px, transparent 2px 46px),
+      linear-gradient(160deg, var(--blue) 0%, var(--blue-deep) 100%);
     z-index:1;
     pointer-events:none;
   }
+  .hero-video{display:none!important}
   .ring-col{
     position:absolute;
     left:14px; top:0; bottom:0;
@@ -674,7 +686,7 @@
 
   <!-- PORTFOLIO / HERO -->
   <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-label="Clixter cinematic hero background" src="assets/videos/hero-bg.mp4"></video>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-label="Clixter cinematic hero background" src="assets/videos/hero-bg.mp4" disablePictureInPicture controlsList="nodownload"></video>
     <div class="hero-overlay" aria-hidden="true"></div>
     <div class="brandmark-small">Clixter</div>
     <div class="ring-col">
@@ -921,10 +933,25 @@
     heroVideo.muted = true;
     heroVideo.setAttribute('playsinline', '');
     heroVideo.setAttribute('webkit-playsinline', '');
-    heroVideo.play().catch(() => {
-      window.addEventListener('pointerdown', () => heroVideo.play().catch(() => {}), { once: true });
-      window.addEventListener('touchstart', () => heroVideo.play().catch(() => {}), { once: true });
-    });
+    heroVideo.removeAttribute('poster');
+    heroVideo.style.backgroundColor = 'transparent';
+    heroVideo.style.opacity = '1';
+    heroVideo.style.visibility = 'visible';
+    heroVideo.style.display = 'block';
+    
+    const playNow = () => {
+      heroVideo.play().catch(e => console.log('Autoplay started'));
+    };
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', playNow);
+    } else {
+      playNow();
+    }
+    
+    setTimeout(playNow, 50);
+    window.addEventListener('pointerdown', playNow, { once: true });
+    window.addEventListener('touchstart', playNow, { once: true });
   }
 
   // ===== WORK CARD VIDEO AUTOPLAY =====
